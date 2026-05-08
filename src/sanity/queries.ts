@@ -1,4 +1,4 @@
-import { client } from './client'
+import { client, sanityConfigured } from './client'
 
 export type Beer = {
   _id: string
@@ -54,6 +54,7 @@ export type SiteSettings = {
 const IMAGE_FIELDS = `image { asset->{ url }, alt }`
 
 async function safeFetch<T>(query: string, fallback: T, options = {}): Promise<T> {
+  if (!sanityConfigured) return fallback
   try {
     return await client.fetch(query, {}, { next: { revalidate: 300 }, ...options })
   } catch {
